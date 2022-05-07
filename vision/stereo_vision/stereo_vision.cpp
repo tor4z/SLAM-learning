@@ -19,7 +19,7 @@ void show_point_cloud(
 {
     if(point_cloud.empty())
     {
-        std::cerr << "" << std::endl;
+        std::cerr << "Point cloud is empty." << std::endl;
         return;
     }
 
@@ -34,23 +34,24 @@ void show_point_cloud(
     );
 
     pangolin::View &d_cam = pangolin::CreateDisplay()
-        .SetBounds(0.0, 0.1, pangolin::Attach::Pix(175), 1.0, -1024.0f/768.0f)
+        .SetBounds(0.0, 0.1, 0.0, 1.0, -1024.0f/768.0f)
+        // .SetBounds(0.0, 0.1, pangolin::Attach::Pix(175), 1.0, -1024.0f/768.0f)
         .SetHandler(new pangolin::Handler3D(s_cam));
-    
+
     while (!pangolin::ShouldQuit())
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         d_cam.Activate(s_cam);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glPointSize(2);
-        glBegin(GL_POINT);
+        glBegin(GL_POINTS);
         for (auto &p: point_cloud)
         {
             glColor3f(p[3], p[3], p[3]);
             glVertex3d(p[0], p[1], p[2]);
         }
-        
         glEnd();
+
         pangolin::FinishFrame();
         usleep(5000);   // sleep 5ms
     }
@@ -61,6 +62,10 @@ int main(int argc, char** argv)
 {
     // intrinsic param
     double fx, fy, cx, cy;
+    fx = 718.956;
+    fy = 718.856;
+    cx = 607.1928;
+    cy = 185.2157;
     // baseline
     double b = 0.573;
 
@@ -69,7 +74,7 @@ int main(int argc, char** argv)
 
     if(left.empty() || right.empty())
     {
-        std::cerr << "" << std::endl;
+        std::cerr << "Read left and right image failed." << std::endl;
         return 1;
     }
 
@@ -95,7 +100,7 @@ int main(int argc, char** argv)
             Eigen::Vector4d point(0, 0, 0, left.at<uchar>(i, j)/255.0);
             double x = (j - cx) / fx;
             double y = (i - cy) / fy;
-            double depth = fx * b / disparity.at<float>(i, j);
+            double depth = fx * b / (disparity.at<float>(i, j));
 
             point[0] = x * depth;
             point[1] = y * depth;
@@ -104,6 +109,7 @@ int main(int argc, char** argv)
             point_cloud.push_back(point);
         }
     }
+    std::cout << "Point cloud size: " << point_cloud.size() << std::endl;
     
     cv::imshow("disparity", disparity / 96.0);
     cv::waitKey(0);

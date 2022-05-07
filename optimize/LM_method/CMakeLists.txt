@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(gauss_newtown)
+project(LM_method)
 
-
-find_package(Eigen3 REQUIRED)
 find_package(OpenCV REQUIRED)
-
+find_package(Eigen3 3.3 REQUIRED)
 
 add_executable(
-    gauss_newton
-    gauss_newton.cpp
+    LM_method
+    LM_method.cpp
 )
 
 target_link_libraries(
-    gauss_newton
+    LM_method
     ${OpenCV_LIBS} Eigen3::Eigen
 )
