@@ -111,7 +111,7 @@ int main(int argc, char** argv)
         double error = (p2.inverse() * p1).log().norm();
         rmse += error * error;
     }
-    
+
     rmse = rmse / double(estimated.size());
     rmse = std::sqrt(rmse);
 

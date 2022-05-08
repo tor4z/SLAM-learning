@@ -10,14 +10,9 @@
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
-    {
-        std::cout << "Invalid argument." << std::endl;
-        return 1;
-    }
 
-    cv::Mat image1 = cv::imread(argv[1], cv::IMREAD_COLOR);
-    cv::Mat image2 = cv::imread(argv[2], cv::IMREAD_COLOR);
+    cv::Mat image1 = cv::imread("../asset/1.png", cv::IMREAD_COLOR);
+    cv::Mat image2 = cv::imread("../asset/2.png", cv::IMREAD_COLOR);
     assert(image1.data != nullptr && image2.data != nullptr);
 
     std::vector<cv::KeyPoint> keypoints1, keypoints2;
@@ -27,7 +22,7 @@ int main(int argc, char** argv)
     cv::Ptr<cv::DescriptorExtractor> descriptor
         = cv::ORB::create();
     cv::Ptr<cv::DescriptorMatcher> matcher
-        = cv::DescriptorMatcher::create("BruteForce_Hamming");
+        = cv::DescriptorMatcher::create("BruteForce-Hamming");
 
     std::chrono::steady_clock::time_point t_start
         = std::chrono::steady_clock::now();
