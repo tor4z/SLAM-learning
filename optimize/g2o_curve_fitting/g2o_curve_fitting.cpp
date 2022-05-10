@@ -28,8 +28,8 @@ public:
         _estimate += Eigen::Vector3d(update);
     }
 
-    virtual bool read(std::istream& in) {}
-    virtual bool write(std::ostream& out) const {}
+    virtual bool read(std::istream& in) {return true;}
+    virtual bool write(std::ostream& out) const {return true;}
 };
 
 
@@ -62,9 +62,8 @@ public:
         _jacobianOplusXi[2] = -y;
     }
 
-    virtual bool read(std::istream& in) {}
-    virtual bool write(std::ostream& out) const {}
-
+    virtual bool read(std::istream& in) {return true;}
+    virtual bool write(std::ostream& out) const {return true;}
 private:
     double x_;
 };
@@ -72,8 +71,8 @@ private:
 
 int main(int argc, char** argv)
 {
-    double ar, br, cr;
-    double ae, be, ce;
+    double ar = 1.0, br = 2.0, cr = 1.0;
+    double ae = 1.0, be = -1.0, ce = 5.0;
     double w_sigma = 1.0;
     double inv_sigma = 1.0 / w_sigma;
     cv::RNG rng;
@@ -83,7 +82,7 @@ int main(int argc, char** argv)
     for (size_t i = 0; i < N; i++)
     {
         double x = i / 100.0;
-        double y = std::exp(ar * x * x + br * x + br) + rng.gaussian(w_sigma * w_sigma);
+        double y = std::exp(ar * x * x + br * x + cr) + rng.gaussian(w_sigma * w_sigma);
         x_data.push_back(x);
         y_data.push_back(y);
     }
@@ -129,7 +128,7 @@ int main(int argc, char** argv)
     
     Eigen::Vector3d abc_estimate = v->estimate();
     std::cout << "Estimated model: "
-        << abc_estimate.transpose() << std::end;
+        << abc_estimate.transpose() << std::endl;
 
     return 0;
 }
